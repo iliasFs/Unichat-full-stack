@@ -29,8 +29,8 @@ const Chats = () => {
       history.push("/");
       return;
     }
-// if we got the user from above we want to see now if the user has been created to the chatengine api.so we make the call with headers etc.
-// the information about the user is coming from above.Specifically from the useAuth function.
+    // if we got the user from above we want to see now if the user has been created to the chatengine api.so we make the call with headers etc.
+    // the information about the user is coming from above.Specifically from the useAuth function.
     axios
       .get("https://api.chatengine.io/users/me", {
         headers: {
@@ -49,19 +49,19 @@ const Chats = () => {
         formdata.append("email", user.email);
         formdata.append("username", user.displayName);
         formdata.append("secret", user.uid);
-        getFile(user.photoUrl).then((avatar) => {
+        getFile(user.photoURL).then((avatar) => {
           formdata.append("avatar", avatar, avatar.name);
 
+          //create the user making a final call to chat-engine API
           axios
-            .post("https://api.chatengine.io/users", formdata, {
+            .post("https://api.chatengine.io/users/", formdata, {
               headers: {
                 "private-key": "5ee1c075-4167-4983-a03d-03b782c08359",
               },
             })
-            .then(() => setLoading(false)); 
-            .catch((error)=> console.log(error))
-            //if its not
-            
+            //if user creation is successful
+            .then(() => setLoading(false))
+            .catch((error) => console.log(error));
         });
       });
   }, [user, history]);
@@ -76,9 +76,9 @@ const Chats = () => {
       </div>
       <ChatEngine
         height="calc(100vh - 66px)"
-        projectId="16492559-44b8-46da-9e76-12090a7de71e"
-        userName="."
-        userSecret="."
+        projectID="16492559-44b8-46da-9e76-12090a7de71e"
+        userName={user.email} // this user is going to be undefined when we FIRST load the page cause it is not fetched yet so we add an if statement above to the code.
+        userSecret={user.uid}
       />
     </div>
   );
